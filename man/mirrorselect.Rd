@@ -16,6 +16,12 @@ data frame with a column of mirror and second column of speed
 test download speed of CRAN mirrors
 by recording download time for mirror/src/base/COPYING
 }
+\examples{
+x <- mirrorselect(c("http://cran.stat.upd.edu.ph/",
+                  "http://healthstat.snu.ac.kr/CRAN/",
+                  "http://cran.ism.ac.jp/"))
+head(x)
+}
 \author{
 Guangchuang Yu
 }

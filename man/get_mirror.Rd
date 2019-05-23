@@ -4,13 +4,19 @@
 \alias{get_mirror}
 \title{get_mirror}
 \usage{
-get_mirror()
+get_mirror(repo = "CRAN")
+}
+\arguments{
+\item{repo}{one of 'CRAN' or 'BioC'}
 }
 \value{
 a vector of mirror urls
 }
 \description{
 extract mirror lists from https://cran.r-project.org/mirrors.html
+}
+\examples{
+head(get_mirror())
 }
 \author{
 Guangchuang Yu

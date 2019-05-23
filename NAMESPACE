@@ -2,4 +2,5 @@
 
 export(get_mirror)
 export(mirrorselect)
+importFrom(magrittr,"%>%")
 importFrom(utils,download.file)
