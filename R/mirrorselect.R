@@ -27,33 +27,27 @@ downloader <- function(url) {
 ##' @examples
 ##' head(get_mirror())
 ##' @author Guangchuang Yu
-get_mirror <- function(repo = "CRAN") {
+                  
+# Add an argument letting users to specify the mirrors from a specific country to test, default is China
+get_mirror <- function(repo = "CRAN", country = "cn") {
     if  (repo == "CRAN") {
-        return(get_mirror_cran())
+        return(get_mirror_cran(country))
     }
 
     get_mirror_bioc()
 }
 
-get_mirror_cran <- function() {
-    ## url <- "https://cran.r-project.org/mirrors.html"
-    ## x <- readLines(url)
-    ## unique(sub(".*(https{0,1}://[a-zA-z\\.\\/]+).*", "\\1", x[grep("^<a", x)]))
-    utils::getCRANmirrors()$URL
+get_mirror_cran <- function(country = "cn") {
+    library(magrittr)
+    utils::getCRANmirrors()$URL %>% grep(pattern = paste(".", country, "/", sep = ""), value=TRUE)
 }
 
-
-get_mirror_bioc <- function() {
-    ## url <- 'https://www.bioconductor.org/about/mirrors/'
-    ## x <- readLines(url)
-    ## x[grep('URLs', x)] %>% strsplit(';') %>%
-    ##     unlist %>% gsub('<[^>]+>', '', .) %>%
-    ##     sub("URLs:", '', .) %>%
-    ##     sub("\\s+", '', .)
+get_mirror_bioc <- function(country = "cn") {
+    library(magrittr)
     .getMirrors <- utils::getFromNamespace('.getMirrors', 'utils')
     .getMirrors("https://bioconductor.org/BioC_mirrors.csv",
                 file.path(R.home("doc"), "BioC_mirrors.csv"),
-                all = FALSE, local.only = FALSE)$URL
+                all = FALSE, local.only = FALSE)$URL%>% grep(pattern = paste(".", country, "/", sep = ""), value=TRUE)
 }
 
 ##' test download speed of CRAN mirrors
