@@ -42,11 +42,20 @@ get_mirror <- function(repo = "CRAN", country = "global") {
 }
 
 get_mirror_cran <- function(country = "global") {
+    ## url <- "https://cran.r-project.org/mirrors.html"
+    ## x <- readLines(url)
+    ## unique(sub(".*(https{0,1}://[a-zA-z\\.\\/]+).*", "\\1", x[grep("^<a", x)]))
     mirrors <- utils::getCRANmirrors()$URL 
     extract_mirror(mirror, country)
 }
 
 get_mirror_bioc <- function(country = "global") {
+    ## url <- 'https://www.bioconductor.org/about/mirrors/'
+    ## x <- readLines(url)
+    ## x[grep('URLs', x)] %>% strsplit(';') %>%
+    ##     unlist %>% gsub('<[^>]+>', '', .) %>%
+    ##     sub("URLs:", '', .) %>%
+    ##     sub("\\s+", '', .)
     .getMirrors <- utils::getFromNamespace('.getMirrors', 'utils')
     mirrors <- .getMirrors("https://bioconductor.org/BioC_mirrors.csv",
                 file.path(R.home("doc"), "BioC_mirrors.csv"),
