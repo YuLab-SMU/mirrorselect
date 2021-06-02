@@ -17,33 +17,39 @@ downloader <- function(url) {
     download.file(url, tempfile(), quiet = TRUE)
 }
 
-##' extract mirror lists from https://cran.r-project.org/mirrors.html
+##' Access CRAN or Bioconductor mirror
 ##'
 ##' 
+##' The mirror lists are obtained from 
+##' https://cran.r-project.org/mirrors.html (CRAN) or
+##' https://bioconductor.org/BioC_mirrors.csv (Bioconductor).
+##' This function allows user to extract mirrors from a specific country using internet country code.                  
 ##' @title get_mirror
 ##' @param repo one of 'CRAN' or 'BioC'
+##' @param country specify the mirrors from a specific country. 
+##'                Default to 'global' without filtering.
 ##' @return a vector of mirror urls
 ##' @export
 ##' @examples
 ##' head(get_mirror())
 ##' @author Guangchuang Yu
-get_mirror <- function(repo = "CRAN") {
+get_mirror <- function(repo = "CRAN", country = "global") {
     if  (repo == "CRAN") {
-        return(get_mirror_cran())
+        return(get_mirror_cran(country))
     }
 
-    get_mirror_bioc()
+    get_mirror_bioc(country)
 }
 
-get_mirror_cran <- function() {
+get_mirror_cran <- function(country = "global") {
     ## url <- "https://cran.r-project.org/mirrors.html"
     ## x <- readLines(url)
     ## unique(sub(".*(https{0,1}://[a-zA-z\\.\\/]+).*", "\\1", x[grep("^<a", x)]))
-    utils::getCRANmirrors()$URL
+    mirrors <- utils::getCRANmirrors()$URL 
+    extract_mirror(mirror, country)
 }
 
-
-get_mirror_bioc <- function() {
+get_mirror_bioc <- function(country = "global") {
     ## url <- 'https://www.bioconductor.org/about/mirrors/'
     ## x <- readLines(url)
     ## x[grep('URLs', x)] %>% strsplit(';') %>%
@@ -51,11 +57,17 @@ get_mirror_bioc <- function() {
     ##     sub("URLs:", '', .) %>%
     ##     sub("\\s+", '', .)
     .getMirrors <- utils::getFromNamespace('.getMirrors', 'utils')
-    .getMirrors("https://bioconductor.org/BioC_mirrors.csv",
+    mirrors <- .getMirrors("https://bioconductor.org/BioC_mirrors.csv",
                 file.path(R.home("doc"), "BioC_mirrors.csv"),
                 all = FALSE, local.only = FALSE)$URL
+    extract_mirror(mirror, country)
 }
 
+extract_mirror <- function(mirror, country) {
+    if (country == 'global') return (mirror)
+    grep(pattern = paste(".", country, "/", sep = ""), x = mirrors, value=TRUE)    
+}
+                  
 ##' test download speed of CRAN mirrors
 ##' by recording download time for mirror/src/base/COPYING
 ##'
