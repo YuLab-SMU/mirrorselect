@@ -4,16 +4,25 @@
 \alias{get_mirror}
 \title{get_mirror}
 \usage{
-get_mirror(repo = "CRAN")
+get_mirror(repo = "CRAN", country = "global")
 }
 \arguments{
 \item{repo}{one of 'CRAN' or 'BioC'}
+
+\item{country}{specify the mirrors from a specific country. 
+Default to 'global' without filtering.}
 }
 \value{
 a vector of mirror urls
 }
 \description{
-extract mirror lists from https://cran.r-project.org/mirrors.html
+Access CRAN or Bioconductor mirror
+}
+\details{
+The mirror lists are obtained from 
+https://cran.r-project.org/mirrors.html (CRAN) or
+https://bioconductor.org/BioC_mirrors.csv (Bioconductor).
+This function allows user to extract mirrors from a specific country using internet country code.
 }
 \examples{
 head(get_mirror())

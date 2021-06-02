@@ -46,7 +46,7 @@ get_mirror_cran <- function(country = "global") {
     ## x <- readLines(url)
     ## unique(sub(".*(https{0,1}://[a-zA-z\\.\\/]+).*", "\\1", x[grep("^<a", x)]))
     mirrors <- utils::getCRANmirrors()$URL 
-    extract_mirror(mirror, country)
+    extract_mirror(mirrors, country)
 }
 
 get_mirror_bioc <- function(country = "global") {
@@ -60,11 +60,11 @@ get_mirror_bioc <- function(country = "global") {
     mirrors <- .getMirrors("https://bioconductor.org/BioC_mirrors.csv",
                 file.path(R.home("doc"), "BioC_mirrors.csv"),
                 all = FALSE, local.only = FALSE)$URL
-    extract_mirror(mirror, country)
+    extract_mirror(mirrors, country)
 }
 
-extract_mirror <- function(mirror, country) {
-    if (country == 'global') return (mirror)
+extract_mirror <- function(mirrors, country) {
+    if (country == 'global') return (mirrors)
     grep(pattern = paste(".", country, "/", sep = ""), x = mirrors, value=TRUE)    
 }
                   
