@@ -5,11 +5,13 @@ mirrorselect_internal <- function(mirrors) {
         file <- "src/base/COPYING"
     }
 
+    mirrors <- springf("%s%s", mirrors, file)
+
     res <- vapply(mirrors, function(url) {
-        url <- paste0(url, file)
         tryCatch(system.time(downloader(url))[["elapsed"]],
                  error = function(e) NA)
     }, FUN.VALUE = numeric(1))
+    return(res)
 }
 
 
@@ -42,7 +44,6 @@ get_mirror <- function(repo = "CRAN", country = "global") {
 }
 
 ##' @importFrom utils getCRANmirrors
-##' @importFrom yulab.utils has_internet
 get_mirror_cran <- function(country = "global") {
     ## url <- "https://cran.r-project.org/mirrors.html"
     ## x <- readLines(url)
@@ -60,10 +61,16 @@ get_mirror_bioc <- function(country = "global") {
     ##     sub("\\s+", '', .)
     .getMirrors <- utils::getFromNamespace('.getMirrors', 'utils')
 
+    Bioc_mirror <- file.path(R.home("doc"), "BioC_mirrors.csv")
+    local_file <- FALSE
+    if (file.exists(Bioc_mirror)) {
+        local_file <- TRUE
+    }
+
     mirrors <- .getMirrors(
         "https://bioconductor.org/BioC_mirrors.csv",
-        file.path(R.home("doc"), "BioC_mirrors.csv"),
-        all = FALSE, local.only = FALSE
+        Bioc_mirror,
+        all = FALSE, local.only = local_file
     )
 
     extract_mirror(mirrors$URL, country)
