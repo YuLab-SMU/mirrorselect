@@ -17,10 +17,12 @@ test download speed of CRAN mirrors
 by recording download time for mirror/src/base/COPYING
 }
 \examples{
-x <- mirrorselect(c("http://cran.stat.upd.edu.ph/",
-                  "http://healthstat.snu.ac.kr/CRAN/",
-                  "http://cran.ism.ac.jp/"))
-head(x)
+if (yulab.utils::has_internet()) {
+    x <- mirrorselect(c("http://cran.stat.upd.edu.ph/",
+                      "http://healthstat.snu.ac.kr/CRAN/",
+                      "http://cran.ism.ac.jp/"))
+    head(x)
+}
 }
 \author{
 Guangchuang Yu

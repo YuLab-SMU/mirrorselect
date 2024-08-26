@@ -12,9 +12,9 @@ mirrorselect_internal <- function(mirrors) {
     }, FUN.VALUE = numeric(1))
 }
 
-##' @importFrom utils download.file
+
 downloader <- function(url) {
-    download.file(url, tempfile(), quiet = TRUE)
+    yulab.utils:::mydownload(url, tempfile())
 }
 
 ##' Access CRAN or Bioconductor mirror
@@ -41,6 +41,8 @@ get_mirror <- function(repo = "CRAN", country = "global") {
     get_mirror_bioc(country)
 }
 
+##' @importFrom utils getCRANmirrors
+##' @importFrom yulab.utils has_internet
 get_mirror_cran <- function(country = "global") {
     ## url <- "https://cran.r-project.org/mirrors.html"
     ## x <- readLines(url)
@@ -57,10 +59,14 @@ get_mirror_bioc <- function(country = "global") {
     ##     sub("URLs:", '', .) %>%
     ##     sub("\\s+", '', .)
     .getMirrors <- utils::getFromNamespace('.getMirrors', 'utils')
-    mirrors <- .getMirrors("https://bioconductor.org/BioC_mirrors.csv",
-                file.path(R.home("doc"), "BioC_mirrors.csv"),
-                all = FALSE, local.only = FALSE)$URL
-    extract_mirror(mirrors, country)
+
+    mirrors <- .getMirrors(
+        "https://bioconductor.org/BioC_mirrors.csv",
+        file.path(R.home("doc"), "BioC_mirrors.csv"),
+        all = FALSE, local.only = FALSE
+    )
+
+    extract_mirror(mirrors$URL, country)
 }
 
 extract_mirror <- function(mirrors, country) {
@@ -77,10 +83,12 @@ extract_mirror <- function(mirrors, country) {
 ##' @return data frame with a column of mirror and second column of speed
 ##' @export
 ##' @examples
-##' x <- mirrorselect(c("http://cran.stat.upd.edu.ph/",
-##'                   "http://healthstat.snu.ac.kr/CRAN/",
-##'                   "http://cran.ism.ac.jp/"))
-##' head(x)
+##' if (yulab.utils::has_internet()) {
+##'     x <- mirrorselect(c("http://cran.stat.upd.edu.ph/",
+##'                       "http://healthstat.snu.ac.kr/CRAN/",
+##'                       "http://cran.ism.ac.jp/"))
+##'     head(x)
+##' }
 ##' @author Guangchuang Yu
 mirrorselect <- function(mirrors) {
     speed <- mirrorselect_internal(mirrors)
@@ -91,4 +99,4 @@ mirrorselect <- function(mirrors) {
 }
 
 
-utils::globalVariables(".")
+# utils::globalVariables(".")

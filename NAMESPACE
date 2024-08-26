@@ -2,4 +2,5 @@
 
 export(get_mirror)
 export(mirrorselect)
-importFrom(utils,download.file)
+importFrom(utils,getCRANmirrors)
+importFrom(yulab.utils,has_internet)
