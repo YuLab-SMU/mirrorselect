@@ -5,7 +5,7 @@ mirrorselect_internal <- function(mirrors) {
         file <- "src/base/COPYING"
     }
 
-    mirrors <- springf("%s%s", mirrors, file)
+    mirrors <- sprintf("%s%s", mirrors, file)
 
     res <- vapply(mirrors, function(url) {
         tryCatch(system.time(downloader(url))[["elapsed"]],
