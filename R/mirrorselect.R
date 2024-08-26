@@ -5,12 +5,15 @@ mirrorselect_internal <- function(mirrors) {
         file <- "src/base/COPYING"
     }
 
-    mirrors <- sprintf("%s%s", mirrors, file)
+    urls <- sprintf("%s%s", mirrors, file)
 
-    res <- vapply(mirrors, function(url) {
+    res <- vapply(urls, function(url) {
         tryCatch(system.time(downloader(url))[["elapsed"]],
                  error = function(e) NA)
     }, FUN.VALUE = numeric(1))
+
+    names(res) <- mirrors
+
     return(res)
 }
 
@@ -45,20 +48,11 @@ get_mirror <- function(repo = "CRAN", country = "global") {
 
 ##' @importFrom utils getCRANmirrors
 get_mirror_cran <- function(country = "global") {
-    ## url <- "https://cran.r-project.org/mirrors.html"
-    ## x <- readLines(url)
-    ## unique(sub(".*(https{0,1}://[a-zA-z\\.\\/]+).*", "\\1", x[grep("^<a", x)]))
     mirrors <- utils::getCRANmirrors()$URL 
     extract_mirror(mirrors, country)
 }
 
 get_mirror_bioc <- function(country = "global") {
-    ## url <- 'https://www.bioconductor.org/about/mirrors/'
-    ## x <- readLines(url)
-    ## x[grep('URLs', x)] %>% strsplit(';') %>%
-    ##     unlist %>% gsub('<[^>]+>', '', .) %>%
-    ##     sub("URLs:", '', .) %>%
-    ##     sub("\\s+", '', .)
     .getMirrors <- utils::getFromNamespace('.getMirrors', 'utils')
 
     Bioc_mirror <- file.path(R.home("doc"), "BioC_mirrors.csv")
@@ -90,10 +84,11 @@ extract_mirror <- function(mirrors, country) {
 ##' @return data frame with a column of mirror and second column of speed
 ##' @export
 ##' @examples
+##' m <- c("https://cloud.r-project.org/", 
+##'        "https://cran.ms.unimelb.edu.au/")
+##'
 ##' if (yulab.utils::has_internet()) {
-##'     x <- mirrorselect(c("http://cran.stat.upd.edu.ph/",
-##'                       "http://healthstat.snu.ac.kr/CRAN/",
-##'                       "http://cran.ism.ac.jp/"))
+##'     x <- mirrorselect(m)
 ##'     head(x)
 ##' }
 ##' @author Guangchuang Yu
@@ -102,8 +97,8 @@ mirrorselect <- function(mirrors) {
     res <- data.frame(mirror=names(speed), speed=speed)
     res <- res[!is.na(speed),]
     res <- res[order(res$speed),]
+    rownames(res) <- NULL
     return(res)
 }
 
 
-# utils::globalVariables(".")

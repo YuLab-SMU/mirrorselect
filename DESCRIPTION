@@ -1,6 +1,6 @@
 Package: mirrorselect
 Title: Test CRAN/Bioconductor Mirror Speed
-Version: 0.0.2
+Version: 0.0.3
 Authors@R: c(person("Guangchuang", "Yu", email = "guangchuangyu@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6485-8781")))
 Description: Testing CRAN and Bioconductor mirror speed by recording download time of 'src/base/COPYING' (for CRAN) and 'packages/release/bioc/html/ggtree.html' (for Bioconductor).
 Depends: R (>= 3.4.0)
